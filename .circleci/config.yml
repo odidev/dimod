@@ -223,13 +223,14 @@ jobs:
             bash -exc '
               /opt/python/${pyv}/bin/python -m venv env
               . env/bin/activate
-              pip install -U pip setuptools wheel
-              pip install -U pip pyparsing
-              pip install -r tests/requirements.txt
-              pip install dimod==0.10.4
+              #pip install -U pip setuptools wheel
+              pip install -U pip wheel
               pip install Cython>=0.29.21
+              pip install dimod==0.10.4
+              pip install -r tests/requirements.txt
               pip install numpy${npv} --upgrade --only-binary=numpy
               pip install dwave-preprocessing --no-build-isolation
+              pip install -U pip pyparsing
               pip install dimod --no-index -f dist/ --no-deps --force-reinstall
             '
 
@@ -576,9 +577,9 @@ workflows:
           name: build-<< matrix.manylinux-tag >>_<< matrix.manylinux-arch >>-py<< matrix.python-version >>
           matrix:
             parameters:
-              python-version: &python-versions [3.6.14, 3.7.11, 3.8.11, 3.9.6]
-              manylinux-tag: &manylinux-tags ["manylinux2014"]
-              manylinux-arch: &manylinux-archs ["aarch64"]
+              python-version: *python-versions
+              manylinux-tag: &manylinux-tag-aarch64 ["manylinux2014"]
+              manylinux-arch: &manylinux-arch-aarch64 ["aarch64"]
       - test-linux-aarch64:
           name: test-linux-<< matrix.manylinux-arch >>-numpy<< matrix.numpy-version >>-py<< matrix.python-version >>
           # We could break each of these out into seperate jobs so that we
@@ -592,8 +593,8 @@ workflows:
               # currently deployed
               numpy-version: [<1.20, <1.21]
               python-version: ["cp37-cp37m", "cp38-cp38", "cp39-cp39"]
-              manylinux-tag: *manylinux-tags
-              manylinux-arch: *manylinux-archs
+              manylinux-tag: *manylinux-tag-aarch64
+              manylinux-arch: *manylinux-arch-aarch64
       - test-osx:
           matrix:
             parameters:
